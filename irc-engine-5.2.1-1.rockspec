@@ -1,14 +1,22 @@
-local _version = "5.2.0"
-local _rock_version = "5.2.0"
+-- This file was automatically generated for the LuaDist project.
+
+local _version = "5.2.1"
+local _rock_version = "5.2.1"
 local _release = "1"
 
 package = "irc-engine"
 version = _rock_version .. "-" .. _release
 
+-- LuaDist source
 source = {
-	url = "https://github.com/mirrexagon/lua-irc-engine/archive/v" .. _version .. ".tar.gz",
-	dir = "lua-irc-engine-" .. _version
+  tag = "5.2.1-1",
+  url = "git://github.com/LuaDist-testing/irc-engine.git"
 }
+-- Original source
+-- source = {
+-- 	url = "https://github.com/mirrexagon/lua-irc-engine/archive/v" .. _version .. ".tar.gz",
+-- 	dir = "lua-irc-engine-" .. _version
+-- }
 
 description = {
 	summary = "A Lua IRC module that tries to be minimal and extensible.",

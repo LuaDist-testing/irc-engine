@@ -1,5 +1,5 @@
 local IRCe = {
-	_VERSION = "Lua IRC Engine v5.2.0",
+	_VERSION = "Lua IRC Engine v5.2.1",
 	_DESCRIPTION = "A Lua IRC module that tries to be minimal and extensible.",
 	_URL = "https://github.com/mirrexagon/lua-irc-engine",
 	_LICENSE = [[
@@ -222,6 +222,11 @@ local function parse_message(message_tagged)
 end
 
 local function do_callbacks(self, command, ...)
+	if select("#", ...) == 0 then
+		-- Don't call callbacks or hooks if handler returned nothing
+		return
+	end
+
 	-- Take reference to functions so unloading modules doesn't mess up iteration.
 	local callback = self.callbacks[command]
 	local all_callback = self.callbacks[IRCe.ALL]
