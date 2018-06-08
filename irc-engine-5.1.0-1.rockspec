@@ -1,7 +1,7 @@
 -- This file was automatically generated for the LuaDist project.
 
-local _version = "5.0.0"
-local _rock_version = "5.0.0"
+local _version = "5.1.0"
+local _rock_version = "5.1.0"
 local _release = "1"
 
 package = "irc-engine"
@@ -9,7 +9,7 @@ version = _rock_version .. "-" .. _release
 
 -- LuaDist source
 source = {
-  tag = "5.0.0-1",
+  tag = "5.1.0-1",
   url = "git://github.com/LuaDist-testing/irc-engine.git"
 }
 -- Original source

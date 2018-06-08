@@ -1,7 +1,7 @@
 local IRCe = {
-	_VERSION = "Lua IRC Engine v5.0.0-pre5",
+	_VERSION = "Lua IRC Engine v5.1.0",
 	_DESCRIPTION = "A Lua IRC module that tries to be minimal and extensible.",
-	_URL = "https://github.com/legospacy/lua-irc-engine",
+	_URL = "https://github.com/mirrexagon/lua-irc-engine",
 	_LICENSE = [[
 		Lua IRC engine is released into the public domain via CC0 (https://creativecommons.org/publicdomain/zero/1.0).
 	]]
@@ -9,7 +9,9 @@ local IRCe = {
 
 
 --- Require ---
-local util = require("irce.util")
+local _NAME = ...
+
+local util = require(_NAME .. ".util")
 --- ==== ---
 
 
@@ -19,9 +21,16 @@ local unpack = table.unpack or unpack
 
 
 --- Constants ---
--- Unique values for callbacks.
-IRCe.RAW = {}
-IRCe.DISCONNECT = {}
+--- Unique values for special callbacks.
+
+-- Raw IRC messages in both directions.
+IRCe.RAW = setmetatable({}, {__tostring = function() return "IRCe RAW" end})
+
+-- Host program should call this when a disconnect occurs.
+IRCe.DISCONNECT = setmetatable({}, {__tostring = function() return "IRCe DISCONNECT" end})
+
+-- Called for every callback, with the command name as the first argument after `self`.
+IRCe.ALL = setmetatable({}, {__tostring = function() return "IRCe ALL" end})
 --- ==== ---
 
 
@@ -216,6 +225,7 @@ end
 function Base:handle(command, ...)
 	local handler = self.handlers[command]
 	local callback = self.callbacks[command]
+	local all_callback = self.callbacks[IRCe.ALL]
 	local handler_return
 
 	-- TODO: nils in the handler return (eg. `return nil, data, data2`)
@@ -228,22 +238,24 @@ function Base:handle(command, ...)
 		handler_return = {handler(self, state, ...)}
 	end
 
-	if callback then
-		if handler and #handler_return > 0 then
-			-- Handler exists and returned something, call callback with that.
-			callback(self.userobj, unpack(handler_return))
+	if handler and #handler_return > 0 then
+		-- Handler exists and returned something, call callback with that.
+		if callback then callback(self.userobj, unpack(handler_return)) end
+		if all_callback then all_callback(self.userobj, command, unpack(handler_return)) end
 
-		elseif not handler then
-			-- Handler doesn't exist, call callback with handler args.
-			callback(self.userobj, ...)
+	elseif not handler then
+		-- Handler doesn't exist, call callback with handler args.
+		if callback then callback(self.userobj, ...) end
+		if all_callback then all_callback(self.userobj, command, ...) end
 
-		end -- Handler exists but didn't return anything, don't call callback.
 	end
+		-- Handler exists but didn't return anything, don't call callback.
 
 	-- Call module hooks.
 	-- Clone so unloading modules doesn't mess up iteration.
 	-- It'll be garbage collected eventually, letting the actual unloaded
 	-- modules be collected too.
+	-- TODO: This is probably terrible in terms of memory usage. Fix it.
 	local modules = util.table.clone(self.modules.modules)
 
 	for mod in pairs(modules) do
@@ -269,12 +281,12 @@ function Base:process(message)
 	if prefix then
 		local nick, username, host = prefix:match("^(.+)!(.+)@(.+)$")
 		if nick and username and host then
-			sender = {nick, username, host}
+			sender = {type = "user", nick, username, host}
 		else
-			sender = {prefix}
+			sender = {type = "server", prefix}
 		end
 	else
-		sender = {}
+		sender = {type = "none"}
 	end
 
 	self:handle(command, sender, params, tags)
@@ -448,8 +460,6 @@ function IRCe.new(userobj)
 	}, Base)
 
 	o.userobj = userobj or o
-
-	o.senders.RAW = o.senders[IRCe.RAW] -- COMPAT
 
 	return o
 end

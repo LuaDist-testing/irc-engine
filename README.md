@@ -3,10 +3,6 @@ A Lua IRC module that tries to be minimal and extensible.
 
 ---
 
-**NOTE:** I don't actively work on this anymore. I've released the module into the public domain via CC0. If anyone wants to take it and work on/maintain it, feel free. Just email me and I can relinquish the `irc-engine` name on LuaRocks.
-
----
-
 Lua IRC Engine is a basic IRC "translator". It provides basic message parsing and a way to add simple sending convenience functions and command interpreters/handlers, but leaves most of the actual processing of command content to the host application. For example, it does not keep a list of joined channels or even know what its nick is.
 
 Lua IRC Engine is released into the public domain via CC0 (https://creativecommons.org/publicdomain/zero/1.0).
@@ -20,7 +16,7 @@ To create an IRC object, use `IRCe.new()`:
 ```lua
 local IRCe = require("irce")
 
-local irc = IRC.new()
+local irc = IRCe.new()
 ```
 
 From now on, this README assumes that `irc` is an IRC Engine object created as above.
@@ -137,18 +133,22 @@ Sender tables are derived from the message prefix, and are structured like this:
 ```lua
 -- From a user:
 sender = {
+	type = "user",
+	
 	[1] = "Nick",
 	[2] = "username",
-	[3] = "host.name"
+	[3] = "host.name",
 }
 
 -- or from a server:
 sender = {
-	[1] = "irc.server.domain"
+	type = "server",
+	
+	[1] = "irc.server.domain",
 }
 
 -- or no prefix:
-sender = {}
+sender = { type = "none" }
 ```
 
 ---
@@ -168,7 +168,7 @@ There is more information about handlers in the next section, "Extending the mod
 
 ---
 
-There is a special callback with the special value `irce.RAW` which is called whenever an IRC message is sent or received. This is useful for printing raw messages to a console or logging them. Its first argument is `true` when the message is being sent or `false` when the message is being received, and the second argument is the message.
+There is a special callback with the special value `IRCe.RAW` which is called whenever an IRC message is sent or received. This is useful for printing raw messages to a console or logging them. Its first argument is `true` when the message is being sent or `false` when the message is being received, and the second argument is the message.
 It is used like so:
 ```lua
 irc:set_callback(IRCe.RAW, function(self, send, message)
@@ -177,6 +177,10 @@ end)
 ```
 
 Another special callback is `DISCONNECT` which is not called by this module, but should be called by the host application (using `irc:handle(IRCe.DISCONNECT)`) when the socket is closed or the server disconnects. This allows modules and the host application to do cleanup.
+
+The callback `IRCe.ALL` is called for ALL callbacks in addition as the specific callback. It follows the same calling rules as normal callbacks (not called when handler doesn't return anything). The first argument (after the user object, see below) is the key for the callback that is being called. 
+
+`ALL` is useful for when you want to relay lots of different kinds IRC events without having to make a callback for every single one.
 
 
 ## User objects

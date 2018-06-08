@@ -1,8 +1,13 @@
+local _version = "5.1.0"
+local _rock_version = "5.1.0"
+local _release = "1"
+
 package = "irc-engine"
-version = "scm-3"
+version = _rock_version .. "-" .. _release
 
 source = {
-	url = "git://github.com/mirrexagon/lua-irc-engine.git"
+	url = "https://github.com/mirrexagon/lua-irc-engine/archive/v" .. _version .. ".tar.gz",
+	dir = "lua-irc-engine-" .. _version
 }
 
 description = {
@@ -14,7 +19,7 @@ description = {
 		of command content to the host application.
 	]],
 	homepage = "http://github.com/mirrexagon/lua-irc-engine",
-	license = "MIT/X11"
+	license = "CC0"
 }
 
 dependencies = {

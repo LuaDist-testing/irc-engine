@@ -1,13 +1,8 @@
-local _version = "5.0.0"
-local _rock_version = "5.0.0"
-local _release = "1"
-
 package = "irc-engine"
-version = _rock_version .. "-" .. _release
+version = "scm-1"
 
 source = {
-	url = "https://github.com/mirrexagon/lua-irc-engine/archive/v" .. _version .. ".tar.gz",
-	dir = "lua-irc-engine-" .. _version
+	url = "git://github.com/mirrexagon/lua-irc-engine.git"
 }
 
 description = {
@@ -19,7 +14,7 @@ description = {
 		of command content to the host application.
 	]],
 	homepage = "http://github.com/mirrexagon/lua-irc-engine",
-	license = "CC0"
+	license = "MIT/X11"
 }
 
 dependencies = {
@@ -30,14 +25,14 @@ build = {
 	type = "builtin",
 	modules = {
 		-- Main module file.
-		["irce"] = "src/init.lua",
+		["irce"] = "init.lua",
 
 		-- Standard modules.
-		["irce.modules.base"] = "src/modules/base.lua",
-		["irce.modules.message"] = "src/modules/message.lua",
-		["irce.modules.channel"] = "src/modules/channel.lua",
+		["irce.modules.base"] = "modules/base.lua",
+		["irce.modules.message"] = "modules/message.lua",
+		["irce.modules.channel"] = "modules/channel.lua",
 
 		-- Utilities.
-		["irce.util"] = "src/util.lua"
+		["irce.util"] = "util.lua"
 	}
 }
