@@ -1,22 +1,14 @@
--- This file was automatically generated for the LuaDist project.
-
-local _version = "5.1.0"
-local _rock_version = "5.1.0"
-local _release = "2"
+local _version = "5.2.0"
+local _rock_version = "5.2.0"
+local _release = "1"
 
 package = "irc-engine"
 version = _rock_version .. "-" .. _release
 
--- LuaDist source
 source = {
-  tag = "5.1.0-2",
-  url = "git://github.com/LuaDist-testing/irc-engine.git"
+	url = "https://github.com/mirrexagon/lua-irc-engine/archive/v" .. _version .. ".tar.gz",
+	dir = "lua-irc-engine-" .. _version
 }
--- Original source
--- source = {
--- 	url = "https://github.com/mirrexagon/lua-irc-engine/archive/v" .. _version .. ".tar.gz",
--- 	dir = "lua-irc-engine-" .. _version
--- }
 
 description = {
 	summary = "A Lua IRC module that tries to be minimal and extensible.",
@@ -44,6 +36,7 @@ build = {
 		["irce.modules.base"] = "modules/base.lua",
 		["irce.modules.message"] = "modules/message.lua",
 		["irce.modules.channel"] = "modules/channel.lua",
+		["irce.modules.motd"] = "modules/motd.lua",
 
 		-- Utilities.
 		["irce.util"] = "util.lua"
