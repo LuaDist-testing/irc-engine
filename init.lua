@@ -1,5 +1,5 @@
 local IRCe = {
-	_VERSION = "Lua IRC Engine v5.2.1",
+	_VERSION = "Lua IRC Engine v5.2.2",
 	_DESCRIPTION = "A Lua IRC module that tries to be minimal and extensible.",
 	_URL = "https://github.com/mirrexagon/lua-irc-engine",
 	_LICENSE = [[
@@ -394,7 +394,7 @@ end
 function Base:unload_module(module_table)
 	local ERR_PREFIX = "Could not unload module: "
 
-	if not self.modules[module_table] then
+	if not self.modules.modules[module_table] then
 		return false, ERR_PREFIX .. "module not loaded"
 	end
 
